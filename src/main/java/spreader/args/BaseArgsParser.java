@@ -5,6 +5,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.UnrecognizedOptionException;
 
 abstract class BaseArgsParser implements ArgsParser{
     
@@ -12,13 +13,20 @@ abstract class BaseArgsParser implements ArgsParser{
     private CommandLineParser parser = new GnuParser();
     
     public CommandLine parse(String[] args) throws ParseException, ArgsUsageException {        
-       setUp();                        
-       CommandLine line = parser.parse(options, args);
+       setUp();        
+       CommandLine line = getCommandLine(args);
        if(isNotValid(line)) throw new ArgsUsageException(options);
        return line;
     }
     
-    private Boolean isNotValid(CommandLine line) {
+    private CommandLine getCommandLine(String[] args) throws ParseException, ArgsUsageException {
+        CommandLine line;        
+        try { line = parser.parse(options, args); } 
+        catch (UnrecognizedOptionException e) { throw new ArgsUsageException(options); } 
+        return line;
+    }
+    
+    private Boolean isNotValid(CommandLine line) {      
         return !isValid(line);
     }
     
