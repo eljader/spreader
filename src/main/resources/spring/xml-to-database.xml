@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+	
+	<bean id="converter" class="spreader.service.converter.StringBuildConverter" >
+	<constructor-arg type="String" > 
+	    <value><![CDATA[
+            INSERT INTO fias_directions(
+				id, code, name, socr, level, is_active, link, parent_link, postal_code
+			)
+            VALUES(
+            	'#<AOID>', 
+            	'#<CODE>', 
+            	'#<FORMALNAME>', 
+            	'#<SHORTNAME>', 
+            	'#<AOLEVEL>', 
+            	'#<ACTSTATUS>',  
+            	'#<AOGUID>',  
+            	'#<PARENTGUID>',  
+            	NULLIF('#<POSTALCODE>', '')::integer  
+        	);
+   	    ]]></value>
+	</constructor-arg>
+	</bean>
+	
+    <bean id="client" class="spreader.service.sender.PgSqlClient" >
+		<constructor-arg index="0" type="String" value="127.0.0.1" />
+		<constructor-arg index="1" type="int" value="5432"/>
+		<constructor-arg index="2" type="String" value="postgres" /> <!-- database -->
+		<constructor-arg index="3" type="String" value="postgres" /> <!-- user -->
+		<constructor-arg index="4" type="String" value="" />         <!-- password -->
+	</bean>
+	
+    <bean id="sender" class="spreader.service.sender.StringSender" >
+    	<constructor-arg><ref bean="client"/></constructor-arg>
+	</bean>  
+		
+    <bean id="service" class="spreader.service.PrepareAndSendService" > 
+    	<constructor-arg index="0" ><ref bean="converter"/></constructor-arg>
+    	<constructor-arg index="1" ><ref bean="sender"/></constructor-arg>
+    	<constructor-arg index="2" >
+    		<array><value>Object</value></array>
+		</constructor-arg>
+	</bean>  
+	
+    <bean id="service-dummy" class="spreader.service.DummySAXService" /> 
+		
+    <bean id="handler" class="spreader.ParseHandler" >
+    	<constructor-arg index="0" ><ref bean="service"/></constructor-arg>
+    	<constructor-arg index="1" ><ref bean="service-dummy"/></constructor-arg>
+	</bean>    	
+</beans>
