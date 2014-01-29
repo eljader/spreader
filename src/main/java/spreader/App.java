@@ -30,12 +30,16 @@ public class App
             FileSystemXmlApplicationContext context = 
                     new FileSystemXmlApplicationContext("file:" + line.getOptionValue("configuration"));
         	    	
+            System.out.println("Started processing, see details in spreader.log");
+            
     		SAXParserFactory.newInstance().newSAXParser().parse(
 	            line.getOptionValue("source"), 
 	            (DefaultHandler) context.getBean("handler")
             );
     		  
     		context.close();
+    		
+    		System.out.println("Done");
     		
         }  catch (ArgsUsageException e) { 
             HelpFormatter formatter = new HelpFormatter();
