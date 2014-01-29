@@ -25,4 +25,11 @@ public class DefaultArgsParserTest extends Assert {
     public void testParseUsageException() throws ParseException, ArgsUsageException {                
         parser.parse(new String[]{"source", "file1", "-", "file2"});
     }
+    
+    @Test(expected = ArgsUsageException.class) 
+    public void testParseUnrecognizedOptionExceptionToUsageException() throws ParseException, ArgsUsageException {                
+        parser.parse(new String[]{"-source", "file1", "-configuration1", "file2"});
+    }
+    
+   
 }
