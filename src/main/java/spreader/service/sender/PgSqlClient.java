@@ -2,7 +2,11 @@ package spreader.service.sender;
 
 import java.sql.*;
 
+import org.apache.log4j.Logger;
+
 public class PgSqlClient implements ClonableClient<String> {
+    
+    static Logger logger = Logger.getLogger(PgSqlClient.class);
     
     private Connection connection;
     private String host; 
@@ -21,11 +25,9 @@ public class PgSqlClient implements ClonableClient<String> {
             connection = getConnection();
             connection.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
         } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error(e);            
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error(e);         
         }               
     }
     
@@ -47,17 +49,16 @@ public class PgSqlClient implements ClonableClient<String> {
         try {
             connection.close();
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error(e);         
         }
     }
     
     public void execute(String sql) {
         try {
             connection.prepareStatement(sql).execute();
+            logger.debug(sql);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.error(e);         
         }       
     }
     
