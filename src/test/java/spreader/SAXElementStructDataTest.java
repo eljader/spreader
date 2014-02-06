@@ -11,8 +11,7 @@ public class SAXElementStructDataTest extends TestCase {
     protected static String nodeName = "test-node-name";
     protected static NullAttributes attrs = new NullAttributes(); 
         
-    public void testSAXElementStructData() {
-        
+    public void testSAXElementStructData() {       
         SAXElementStructData data = new SAXElementStructData(uri, name, nodeName, attrs);
         
         assertEquals("uri", uri, data.getUri());
@@ -21,8 +20,7 @@ public class SAXElementStructDataTest extends TestCase {
         assertEquals("attrs", attrs, data.getAttrs());
     }
     
-    public void testEquals() {
-        
+    public void testEquals() {     
         SAXElementStructData data1 = new SAXElementStructData(uri, name, nodeName, attrs);
         SAXElementStructData data2 = new SAXElementStructData(uri, name, nodeName, attrs);
         SAXElementStructData data3 = new SAXElementStructData(uri, name, nodeName, new NullAttributes());

@@ -4,6 +4,17 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
 	
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://127.0.0.1:5432/postgres"/>
+        <property name="username" value="postgres"/>
+        <property name="password" value=""/>    
+    </bean>
+    
+    <bean id="insert-transport" class="spreader.service.sender.transport.JdbcExecuteTransport">
+    	<constructor-arg><ref bean="dataSource"/></constructor-arg>
+    </bean>
+	
 	<bean id="converter" class="spreader.service.converter.StringBuildConverter" >
 	<constructor-arg type="String" > 
 	    <value><![CDATA[
@@ -25,16 +36,8 @@
 	</constructor-arg>
 	</bean>
 	
-    <bean id="client" class="spreader.service.sender.PgSqlClient" >
-		<constructor-arg index="0" type="String" value="127.0.0.1" />
-		<constructor-arg index="1" type="int" value="5432"/>
-		<constructor-arg index="2" type="String" value="postgres" /> <!-- database -->
-		<constructor-arg index="3" type="String" value="postgres" /> <!-- user -->
-		<constructor-arg index="4" type="String" value="" />         <!-- password -->
-	</bean>
-	
-    <bean id="sender" class="spreader.service.sender.StringSender" >
-    	<constructor-arg><ref bean="client"/></constructor-arg>
+    <bean id="sender" class="spreader.service.sender.DefaultSender" >
+    	<constructor-arg><ref bean="insert-transport"/></constructor-arg>
 	</bean>  
 		
     <bean id="service" class="spreader.service.PrepareAndSendService" > 

@@ -2,7 +2,7 @@ package spreader.service;
 
 import static org.easymock.EasyMock.*;
 
-import org.xml.sax.Attributes;
+import java.util.HashMap;
 
 import spreader.NullAttributes;
 import spreader.SAXElementStructData;
@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 
 public class PrepareAndSendServiceTest extends TestCase {
 
-    protected Converter<Attributes, String> converter;
+    protected Converter<HashMap<String, String>, String> converter;
     protected Sender<String> sender;
     protected SAXService service;
     protected String converterResultString = "string from ConverterStub";
@@ -27,17 +27,18 @@ public class PrepareAndSendServiceTest extends TestCase {
         service = new PrepareAndSendService<String>(converter, sender, new String[]{"testNodeName"});    
     }
         
+    @SuppressWarnings("unchecked")
     public void testSetData() {        
-        converter.setInput(isA(Attributes.class));
+        converter.setInput(isA(HashMap.class));
         replay(converter); 
-        SAXService service1 = 
+        SAXService dummyService = 
                 service.setData(new SAXElementStructData("", "", "", new NullAttributes()));  
-        SAXService service2 = 
+        SAXService sameService = 
                 service.setData(new SAXElementStructData("", "", "testNodeName", new NullAttributes()));         
         verify(converter);
         
-        assertTrue(service1 instanceof DummySAXService);
-        assertEquals(service, service2);
+        assertTrue(dummyService instanceof DummySAXService);
+        assertSame(service, sameService);
     }
     
     public void testRun() {

@@ -1,30 +1,36 @@
 package spreader.service.converter;
 
-import org.xml.sax.*;
-import org.xml.sax.helpers.AttributesImpl;
+import java.util.HashMap;
 
 import spreader.service.converter.StringBuildConverter;
 import junit.framework.TestCase;
 
 public class StringBuildConverterTest extends TestCase {
     
-    protected Attributes input;
+    private HashMap<String, String> input;
+    private StringBuildConverter converter;
     
     protected void setUp() {
-        AttributesImpl impl = new AttributesImpl();
-        impl.addAttribute("", "localName1", "quotes", "type1", "value1");
-        impl.addAttribute("", "localName2", "braces", "type2", "value2");
-        impl.addAttribute("", "localName3", "empty", "type3", "");
-        input = impl;
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("quotes", "1");
+        map.put("braces", "2");
+        map.put("empty",  "");
+        
+        input = map;        
+        converter = new StringBuildConverter("'#<quotes>' + (#<braces>) + #<empty>");
     }
     
     public void testStringBuildConverter() {        
-        StringBuildConverter converter = 
-                new StringBuildConverter("'#<quotes>' + (#<braces>) + #<empty>");
         converter.setInput(input);
         converter.convert();        
-        assertEquals("substituted values", "'value1' + (value2) + ", converter.getResult());
+        assertEquals("substituted values", "'1' + (2) + ", converter.getResult());
     }    
+    
+    public void testSetInputEmpty() {
+        converter.setInput(new HashMap<String, String>());
+        converter.convert();        
+        assertEquals("substituted values", "'' + () + ", converter.getResult());
+    }
 }
 
 

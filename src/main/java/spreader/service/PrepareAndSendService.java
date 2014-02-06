@@ -1,38 +1,34 @@
 package spreader.service;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.xml.sax.Attributes;
+import java.util.HashMap;
 
 import spreader.SAXElementStructData;
 import spreader.service.converter.Converter;
 import spreader.service.sender.Sender;
 
-public class PrepareAndSendService <T> implements SAXService {
+public class PrepareAndSendService <T> extends BaseSAXService {
     
-    private Converter<Attributes, T> converter;
+    private Converter<HashMap<String, String>, T> converter;
     private Sender<T> sender;
-    private List<String> targetNodes;
     
-    public PrepareAndSendService(Converter<Attributes, T> converter, Sender<T> sender, String[] targetNodes) {
+    public PrepareAndSendService(Converter<HashMap<String, String>, T> converter, Sender<T> sender, String[] targetNodes) {
+        super(targetNodes);
         this.converter = converter;
         this.sender = sender;
-        this.targetNodes = Arrays.asList(targetNodes);
     }
     
-    public SAXService setData(SAXElementStructData data) {
-        if (isNotTargetNode(data.getNodeName())) return new DummySAXService();
-        converter.setInput(data.getAttrs());
-        return this;        
-    }
-    
-    private Boolean isNotTargetNode(String name) {
-        return !targetNodes.contains(name); 
+    @Override
+    protected void handleData(SAXElementStructData data) {
+        converter.setInput(assembleAttributes(data.getAttrs()));        
     }
 
+    @Override
+    protected SAXService getDummy() {
+        return new DummySAXService();
+    }
+    
     public void run() {
-        converter.convert();        
+        converter.convert();
         sender.send(converter.getResult());  
     }
 }

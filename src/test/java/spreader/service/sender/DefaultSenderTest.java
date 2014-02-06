@@ -1,34 +1,32 @@
 package spreader.service.sender;
 
 import static org.easymock.EasyMock.*;
-import spreader.service.sender.ClonableClient;
 import spreader.service.sender.CloneableSender;
-import spreader.service.sender.StringSender;
+import spreader.service.sender.DefaultSender;
+import spreader.service.sender.transport.ClonableTransport;
 import junit.framework.TestCase;
 
-public class StringSenderTest extends TestCase {
+public class DefaultSenderTest extends TestCase {
     
-    protected ClonableClient<String> mock;
+    protected ClonableTransport<String> mock;
     
     @SuppressWarnings("unchecked")
     protected void setUp() {
-        mock = createMock(ClonableClient.class);
+        mock = createMock(ClonableTransport.class);
     }
     
     public void testStringSender() {
-
-        CloneableSender<String> sender = new StringSender(mock);
+        CloneableSender<String> sender = new DefaultSender<String>(mock);
         String payload = "test_message";
         
-        mock.execute(payload);
+        mock.sendPayload(payload);
         replay(mock);
         sender.send(payload);
         verify(mock);
     }
     
     public void testClone() {
-
-        CloneableSender<String> sender1 = new StringSender(mock);
+        CloneableSender<String> sender1 = new DefaultSender<String>(mock);
         
         expect(mock.clone()).andReturn(mock);
         replay(mock);

@@ -1,14 +1,14 @@
 package spreader.service.converter;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.xml.sax.Attributes;
 
-public final class StringBuildConverter implements Converter<Attributes, String> {
+final public class StringBuildConverter implements Converter<HashMap<String, String>, String> {
 
-    private Attributes input;
+    private HashMap<String, String> input;
     private String output;
     private String template;
     
@@ -16,7 +16,7 @@ public final class StringBuildConverter implements Converter<Attributes, String>
         this.template = template;
     }
     
-    public void setInput(Attributes input) {
+    public void setInput(HashMap<String, String> input) {
         this.input = input;        
     }
 
@@ -51,7 +51,7 @@ public final class StringBuildConverter implements Converter<Attributes, String>
     }
     
     private String getValue(String key) {
-        String value = input.getValue(key);       
+        String value = input.get(key);       
         return StringUtils.isNotEmpty(value) ? value : "";
     }
 }
