@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+	
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.postgresql.Driver"/>
+        <property name="url" value="jdbc:postgresql://127.0.0.1:5432/postgres"/>
+        <property name="username" value="postgres"/>
+        <property name="password" value=""/>   
+        <property name="accessToUnderlyingConnectionAllowed" value="true"/>      
+    </bean>
+    
+    <bean id="copy-in-transport" class="spreader.service.sender.transport.JdbcPostgresqlCopyInTransport">
+    	<constructor-arg><ref bean="dataSource"/></constructor-arg>
+        <constructor-arg type="String"> 
+        	<value><![CDATA[COPY fias_directions(id, code, name, socr, level, is_active, link, parent_link, postal_code) FROM STDIN WITH DELIMITER AS ';' NULL '']]></value>
+    	</constructor-arg>
+    </bean>
+		
+	<bean id="converter" class="spreader.service.converter.StringBuildConverter">
+		<constructor-arg type="String"> 
+		    <value><![CDATA[#<AOID>;#<CODE>;#<FORMALNAME>;#<SHORTNAME>;#<AOLEVEL>;#<ACTSTATUS>;#<AOGUID>;#<PARENTGUID>;#<POSTALCODE>]]></value>	    	    
+		</constructor-arg>
+	</bean>
+			
+	<bean id="thread-buffer" class="spreader.service.sender.buffer.ThreadBuffer">
+		<constructor-arg type="int" value="1000" /> <!-- buffer records size-->
+	</bean>
+	
+	<bean id="thread-manager" init-method="startThreads" class="spreader.thread.ThreadManager">
+		<constructor-arg><ref bean="builder"/></constructor-arg>
+		<constructor-arg type="int" value="8" /> <!-- max threads -->
+	</bean>
+			
+    <bean id="buffer-transport" class="spreader.service.sender.transport.ThreadBufferTransport"> 
+		<constructor-arg><ref bean="thread-buffer"/></constructor-arg>
+	</bean>
+			
+    <bean id="jdbc-sender" class="spreader.service.sender.DefaultSender">
+    	<constructor-arg><ref bean="copy-in-transport"/></constructor-arg>
+	</bean>  
+	
+    <bean id="buffer-sender" class="spreader.service.sender.DefaultSender">
+    	<constructor-arg><ref bean="buffer-transport"/></constructor-arg>
+	</bean>  
+	
+    <bean id="list-to-string" class="spreader.service.converter.ListToStringConverter">
+	</bean>  
+	
+    <bean id="builder" class="spreader.thread.DefaultThreadSenderBuilder">
+    	<constructor-arg><ref bean="thread-buffer"/></constructor-arg>
+    	<constructor-arg><ref bean="jdbc-sender"/></constructor-arg>
+    	<constructor-arg><ref bean="list-to-string"/></constructor-arg>
+	</bean>   
+						
+    <bean id="service-on-start" class="spreader.service.PrepareAndSendService"> 
+    	<constructor-arg><ref bean="converter"/></constructor-arg>
+    	<constructor-arg><ref bean="buffer-sender"/></constructor-arg>
+    	<constructor-arg>
+    		<array><value>Object</value></array>
+		</constructor-arg>
+	</bean>  
+	
+    <bean id="service-on-end" class="spreader.service.ThreadEndService">
+    	<constructor-arg><ref bean="thread-manager"/></constructor-arg>
+    	<constructor-arg><ref bean="thread-buffer"/></constructor-arg>
+    	<constructor-arg>
+    		<array><value>AddressObjects</value></array>
+		</constructor-arg>
+	</bean>
+	
+    <bean id="handler" class="spreader.ParseHandler" >
+    	<constructor-arg><ref bean="service-on-start"/></constructor-arg>
+    	<constructor-arg><ref bean="service-on-end"/></constructor-arg>
+	</bean>    	
+</beans>
