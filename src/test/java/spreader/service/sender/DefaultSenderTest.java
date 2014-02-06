@@ -8,7 +8,7 @@ import junit.framework.TestCase;
 
 public class DefaultSenderTest extends TestCase {
     
-    protected ClonableTransport<String> mock;
+    private ClonableTransport<String> mock;
     
     @SuppressWarnings("unchecked")
     protected void setUp() {

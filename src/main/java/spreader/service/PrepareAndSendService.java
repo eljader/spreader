@@ -11,7 +11,8 @@ public class PrepareAndSendService <T> extends BaseSAXService {
     private Converter<HashMap<String, String>, T> converter;
     private Sender<T> sender;
     
-    public PrepareAndSendService(Converter<HashMap<String, String>, T> converter, Sender<T> sender, String[] targetNodes) {
+    public PrepareAndSendService(Converter<HashMap<String, String>, T> converter,
+            Sender<T> sender, String[] targetNodes) {
         super(targetNodes);
         this.converter = converter;
         this.sender = sender;

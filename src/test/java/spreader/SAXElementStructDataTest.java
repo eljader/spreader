@@ -6,10 +6,10 @@ import junit.framework.TestCase;
 
 public class SAXElementStructDataTest extends TestCase {
     
-    protected static String uri = "http//:test.com";
-    protected static String name = "test-name";
-    protected static String nodeName = "test-node-name";
-    protected static NullAttributes attrs = new NullAttributes(); 
+    private String uri = "http//:test.com";
+    private String name = "test-name";
+    private String nodeName = "test-node-name";
+    private NullAttributes attrs = new NullAttributes(); 
         
     public void testSAXElementStructData() {       
         SAXElementStructData data = new SAXElementStructData(uri, name, nodeName, attrs);

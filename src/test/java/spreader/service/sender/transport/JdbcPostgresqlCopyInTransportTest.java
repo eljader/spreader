@@ -18,7 +18,7 @@ public class JdbcPostgresqlCopyInTransportTest extends Assert {
     private DataSource dataSource;
     private JdbcPostgresqlCopyInTransport transport;
     private CopyManager copyManager;
-    static String expression = "test expression";
+    private String expression = "test expression";
     
     @Before
     public void setUp() {

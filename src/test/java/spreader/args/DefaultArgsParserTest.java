@@ -9,7 +9,7 @@ import spreader.args.DefaultArgsParser;
 
 public class DefaultArgsParserTest extends Assert {
     
-    DefaultArgsParser parser = new DefaultArgsParser();
+    private DefaultArgsParser parser = new DefaultArgsParser();
     
     @Test
     public void testParseSuccess() throws ParseException, ArgsUsageException {

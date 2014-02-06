@@ -10,7 +10,7 @@ import static org.easymock.EasyMock.*;
 
 public class ThreadManagerTest extends Assert {
     
-    static int maxThreads = 4;
+    private int maxThreads = 4;
     private ThreadManager<String> manager;
     private ThreadBuilder<String> builder;
     private Thread thread;
@@ -30,7 +30,9 @@ public class ThreadManagerTest extends Assert {
         expectLastCall().times(maxThreads);
         
         replay(builder, thread);
+        
         manager.startThreads();
+        
         verify(builder, thread);
     }
     
@@ -38,8 +40,11 @@ public class ThreadManagerTest extends Assert {
     public void testIsThreadsFinishedTrue() {
         injectThreadsMock();       
         expect(thread.getState()).andReturn(Thread.State.TERMINATED).times(maxThreads);
+        
         replay(thread);
+        
         assertTrue(manager.isThreadsFinished());
+        
         verify(thread);
     }
     
@@ -48,8 +53,11 @@ public class ThreadManagerTest extends Assert {
         injectThreadsMock();               
         expect(thread.getState()).andReturn(Thread.State.TERMINATED).times(maxThreads - 1); 
         expect(thread.getState()).andReturn(Thread.State.RUNNABLE);
+        
         replay(thread);
+        
         assertFalse(manager.isThreadsFinished());
+        
         verify(thread);
     }
     

@@ -6,8 +6,8 @@ import spreader.thread.ThreadManager;
 
 public class ThreadEndService<T> extends BaseSAXService {
     
-    ThreadManager<T> manager;
-    ThreadBuffer<T> buffer;
+    private ThreadManager<T> manager;
+    private ThreadBuffer<T> buffer;
        
     public ThreadEndService(ThreadManager<T> manager, ThreadBuffer<T> buffer, String[] targetNodes) {
         super(targetNodes);

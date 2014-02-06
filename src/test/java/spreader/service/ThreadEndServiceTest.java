@@ -23,10 +23,12 @@ public class ThreadEndServiceTest extends TestCase {
     public void testSetData() {
         /**do nothing**/
         replay(manager, buffer);
+        
         SAXService dummuyService = 
                 service.setData(new SAXElementStructData("", "", "", new NullAttributes()));  
         SAXService sameService = 
                 service.setData(new SAXElementStructData("", "", "testNodeName", new NullAttributes())); 
+        
         verify(manager, buffer);
         
         assertTrue(dummuyService instanceof DummySAXService);
@@ -38,7 +40,9 @@ public class ThreadEndServiceTest extends TestCase {
         expect(manager.isThreadsFinished()).andReturn(true).once();
                 
         replay(buffer, manager);
+        
         service.run();
+        
         verify(buffer, manager);
     }
     
@@ -46,8 +50,10 @@ public class ThreadEndServiceTest extends TestCase {
         expect(manager.isThreadsFinished()).andReturn(false).anyTimes().andStubReturn(true);
                
         replay(manager);
+        
         Thread thread = new Thread(service);
         thread.start();
+        
         verify(manager);
     }
 }

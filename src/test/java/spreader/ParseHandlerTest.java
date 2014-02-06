@@ -11,9 +11,9 @@ import junit.framework.TestCase;
 
 public class ParseHandlerTest extends TestCase {
     
-    protected ParseHandler handler;
-    protected SAXService startMock;
-    protected SAXService endMock;
+    private ParseHandler handler;
+    private SAXService startMock;
+    private SAXService endMock;
     
     protected void setUp() {
         startMock = createMock(SAXService.class);

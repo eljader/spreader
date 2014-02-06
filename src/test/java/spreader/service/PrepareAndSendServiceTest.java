@@ -31,10 +31,12 @@ public class PrepareAndSendServiceTest extends TestCase {
     public void testSetData() {        
         converter.setInput(isA(HashMap.class));
         replay(converter); 
+        
         SAXService dummyService = 
                 service.setData(new SAXElementStructData("", "", "", new NullAttributes()));  
         SAXService sameService = 
                 service.setData(new SAXElementStructData("", "", "testNodeName", new NullAttributes()));         
+        
         verify(converter);
         
         assertTrue(dummyService instanceof DummySAXService);
@@ -45,8 +47,11 @@ public class PrepareAndSendServiceTest extends TestCase {
         converter.convert();
         expect(converter.getResult()).andReturn("Test Data").once();
         sender.send("Test Data");
+        
         replay(converter, sender);   
+        
         service.run();
+        
         verify(converter, sender);
     }
 }

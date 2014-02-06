@@ -5,7 +5,7 @@ import junit.framework.TestCase;
 
 public class NullAttributesTest extends TestCase {
 
-    protected NullAttributes attr;
+    private NullAttributes attr;
     
     protected void setUp() {
        attr =  new NullAttributes();       

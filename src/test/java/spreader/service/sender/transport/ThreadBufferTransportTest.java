@@ -10,8 +10,8 @@ import static org.easymock.EasyMock.*;
 
 public class ThreadBufferTransportTest extends Assert {
 
-    ThreadBufferTransport<String> transport;
-    ThreadBuffer<String> buffer;
+    private ThreadBufferTransport<String> transport;
+    private ThreadBuffer<String> buffer;
     
     @SuppressWarnings("unchecked")
     @Before
