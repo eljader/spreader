@@ -20,6 +20,6 @@ public class DefaultThreadSenderService<T> extends BaseThreadSenderService<T> {
                 converter.convert();
                 sender.send(converter.getResult());
             }    
-        } catch(InterruptedException e) {/**quit**/ System.out.println(this.toString());}                       
+        } catch(InterruptedException e) {/**quit**/}                       
     }
 }
